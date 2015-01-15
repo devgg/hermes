@@ -1,0 +1,50 @@
+# Protocol Configuration #
+messageIdSize:    1
+
+---
+# Header Definition #
+
+protocolId:       DEADBEEF  #do we need protocolIdSize and version size??? I dont think so
+version:          0001
+
+---
+# Complex Type Definitions #
+
+Person:
+  - firstName:
+      type: String
+      length_f: 7
+  - lastName:
+      type: String
+      length_v: 2
+  - initial:
+      type: String
+      length_v: 2
+
+Family:
+  - dad:
+      type: Person
+      reps_f: 1
+
+---
+# Message Definitions #
+
+00:
+  - person:
+      type: Person
+      reps_f: 1
+
+01:
+  - persons:
+      type: Person
+      reps_v: 1
+
+  - avgAge:
+      type: Double
+      length_f: 8
+
+      
+  
+  
+  
+  
