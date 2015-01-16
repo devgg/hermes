@@ -17,7 +17,7 @@ import scala.reflect.ClassTag
 object Main {
 	def main(args: Array[String]) {
 
-		val source = scala.io.Source.fromFile("src/main/resources/simple.yaml")
+		val source = scala.io.Source.fromFile("src/main/resources/simple.hermes.yaml")
 		val yaml = source.getLines mkString "\n"
 		source.close()
 

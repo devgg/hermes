@@ -2,37 +2,44 @@
 messageIdSize:    1
 
 ---
-# Header Definition #
 
+# Header Definition #
 protocolId:       0420
 version:          01
 
 ---
+
 # Complex Type Definitions #
+User:
+  - userName:
+      type: String<utf8>
+      length_f: 1
+  - tags:
+      type: String<ascii>
+      length_f: 1
+      reps_v: 1
 
 Metadata:
   - user:
-      type: String<utf8>
-      length_v: 1
+      type: User
   - date:
       type: java.util.Date
-      length_v: 2
+      length_f: 2
 
 
 ---
-# Unit Definitions #
 
+# Unit Definitions #
 00:
   - metadata:
       type: Metadata
   - messages:
       type: String<utf8>
       length_v: 2
-     # reps_v: 1
+      reps_v: 1
 
 01:
   - metadata:
       type: Metadata
   - file:
-      type: Array<Byte>
-      length_v: 5
+      type: Protocol<file>

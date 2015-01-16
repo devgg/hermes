@@ -16,7 +16,7 @@ import java.net.{ServerSocket, Socket, InetAddress}
 
 object Main2 {
 	def main(args: Array[String]) {
-		val source = scala.io.Source.fromFile("src/main/resources/messenger.yaml")
+		val source = scala.io.Source.fromFile("src/main/resources/messenger.hermes.yaml")
 		val pi = Protocol(source.getLines mkString "\n")
 		source.close()
 
