@@ -14,14 +14,14 @@ The Hermes language uses a small subset of YAML's features. A protocol definitio
 <br>
 <br>
  
-**Protocol Configuration**
+**Section 1: Protocol Configuration**
 
 | Name | Description | Type | Default | Optional |
 | :--: | ----------- | ---- | :-----: | :------: |
 | messageIdSize | the size in bytes of the message id | unsigned int | 1 | &#10004; |
 
 <br>
-**Header definition**
+**Section 2: Header definition**
 
 | Name | Description | Type | Optional |
 | ---- | ----------- | ---- | :------: |
@@ -29,37 +29,45 @@ The Hermes language uses a small subset of YAML's features. A protocol definitio
 | version | protocol version | unsigned int | &#10006; |
 
 <br>
-**Complex Type Definitions**<br>
-A complex type can contain multiple fields. Each field has a datatype. There are two types of datatypes (meta much?). Basic datatypes need to specify their length with either <code> length_f </code> for a fixed length field or <code> length_v </code> for a variable sized field. Optionally the field repetitions can be defined using either <code> reps_f </code> or <code> reps_v </code>. A complex datatype defined beforehand can also be used as the fields datatype. Such a field must not specify a length but can set the repetitions.
+**Section 3: Complex Type Definitions**<br>
+Complex type definitions are used to specify data that is contained in multiple of the protocol's units.
+A complex type definition consist of a name followed by some fields.
 
 ```yaml
 
 <string>: # complex datatype name                           
-  - <string>: # field name
-      type: <string> # basic datatype
-      length_(f/v): <unsigned int>
-      reps_(f/v): <unsigned int> # optional
-  - <string>: # field name
-      type: <string> # complex datatype
-      reps_(f/v): <unsigned int> # optional
-  - #...
+  - field1 
+      ...
+  - ...
+
+...
 ```
 
 <br>
-**Unit Definitions**<br>
-The unit definition's syntax is similar to the syntax of the complex type definitions. The only difference is that a complex data type is defined by its name (string) and a unit is defined by its id (unsigned integer).
+**Section 4: Unit Definitions**<br>
+The unit definition's syntax is similar to the syntax of the complex type definitions. The only difference is that a complex data type is defined by its name (string) and a unit is defined by its id (unsigned integer). Each unit definition represents one protocol unit.
 
 ```yaml
-<unsigned int>: # unit id
-  - <string>: # field name
-      type: <string> # basic datatype
-      length_(f/v): <unsigned int>
-      reps_(f/v): <unsigned int> #optional
-  - <string>: # field name
-      type: <string> # complex datatype
-      reps_(f/v): <unsigned int> #optional
-  - #...
-```
+<unsigned int>: # complex datatype name                           
+  - field1 
+      ...
+  - ...
+
+...
+  ```
+
+**Fields***
+Each field has a datatype. There are three types of data types. 
+**Basic datatypes** need to specify their length with either <code> length_f </code> for a fixed length field or <code> length_v </code> for a variable sized field. Optionally the field repetitions can be defined using either <code> reps_f </code> or <code> reps_v </code>. Basic datatypes should be named according to the follwing syntax: <code>BasicTypeName<optionalEncoding></code> e.g.: <code>BigInteger</code>, <code>String<utf8></code> or <code>MyOwnClass<utf8></code>.
+
+**Complex datatypes** defined beforehand can also be used as the fields datatype. Such a field must not specify a length but can set the repetitions. 
+
+Similarly a field with a **protocol data type** must not specify a length but can specify the number of repetitions. A protocol data type should be named according to the follwing syntax: <code>Protocol<protocolName></code> e.g.: <code>Protocol<Chat></code>
+
+
+
+
+
 
 Field description
 
