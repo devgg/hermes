@@ -1,6 +1,7 @@
 package org.devgg.hermes
 
 import java.io._
+import java.nio.charset.Charset
 import java.util.Date
 import java.io.File
 import java.io.IOException
@@ -22,6 +23,10 @@ object Main2 {
 
 		pi.setSerializer(new Serializer[Date]("java.util.Date", serialize(_), deserialize(_).asInstanceOf[Date]))
 		pi.setSerializer(new Serializer[Array[Byte]]("Array<Byte>", bytes => bytes, bytes => bytes))
+		pi.setSerializer(new Serializer[String]("String<ascii>", _.getBytes("US-ASCII"), new String(_)))
+
+		pi.setSerializer(new Serializer[Array[Byte]]("Protocol<file>", bytes => bytes, bytes => bytes))
+
 //		pi.setSerializer(new Serializer[List[List[List[Map[String, Int]]]]]("a", bytes => null, bytes => null))
 		val protocol = pi.init
 
@@ -32,18 +37,18 @@ object Main2 {
 //		val socket = new Socket(InetAddress.getByName("www.miky.punked.us"), 4444)
 
 		var exit = false
-//		val in = new PipedInputStream()
-//		val out = new PipedOutputStream(in)
-//		new Thread(
-//			new Runnable(){
-//				def run(){
-//					out.write(protocol.compose(Array[Byte](0), List(List("Florian", new Date()), List("This is msg1", "This is msg2"))))
-//					while (true) {
-//						Thread.sleep(1000)
-//					}
-//				}
-//			}
-//		).start()
+		val in = new PipedInputStream()
+		val out = new PipedOutputStream(in)
+		new Thread(
+			new Runnable(){
+				def run(){
+					out.write(protocol.compose(Array[Byte](0), List(List("Florian", new Date()), List("This is msg1", "This is msg2"))))
+					while (true) {
+						Thread.sleep(1000)
+					}
+				}
+			}
+		).start()
 
 		def handleMessage(msg: (List[Byte], Result)) {
 			msg match {

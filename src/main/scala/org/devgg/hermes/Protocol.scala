@@ -12,23 +12,33 @@ import scala.reflect.runtime.universe.TypeTag
 
 class Protocol private[hermes] (private val id: List[Byte], private val version: List[Byte], private val messageIdSize: Int , private val messages: List[Message]) {
 
-
 	def compose(messageId: Array[Byte], fields: List[_ <: Any]): Array[Byte] = id.toArray ++ (version.toArray ++ findMessage(messageId.toList).compose(fields))
 
-
-	def parse(rbc: ReadableByteChannel, callback: ((List[Byte], Result)) => Unit) {
-		while (true) {
-			val id = getBytes(rbc, this.id.length).toList
-			val version = getBytes(rbc, this.version.length).toList
-			if (this.id == id && this.version == version) {
-				callback(findMessage(getBytes(rbc, messageIdSize).toList).parse(rbc))
+	def parseOnce(rbc: ReadableByteChannel): (List[Byte], Result) = {
+		val id = getBytes(rbc, this.id.length).toList
+		val version = getBytes(rbc, this.version.length).toList
+		if (this.id == id && this.version == version) {
+			findMessage(getBytes(rbc, messageIdSize).toList).parse(rbc)
+		} else {
+			var errorMessage = ""
+			if (this.id != id) {
+				errorMessage += "Invalid protocol id, is: '" + id + "' should be '" + id + "'."
 			}
+			if (this.version != version) {
+				errorMessage += (if(errorMessage.length > 0) " " else "") + "Invalid protocol version, is: '" + id + "' should be " + version + "'."
+			}
+			throw new IllegalArgumentException(errorMessage)
 		}
 	}
 
+	def parse(rbc: ReadableByteChannel, callback: ((List[Byte], Result)) => Unit) {
+		while (true) {
+			callback(parseOnce(rbc))
+		}
+	}
+
+
 	private def findMessage(id: List[Byte]) = messages.find(_.id == id) getOrElse(throw new IllegalArgumentException("Message with id '" + byteListToHexString(id) + "' not defined for protocol '" + byteListToHexString(this.id) + "'"))
-
-
 
 	override val toString = "id: " + formatToString(byteListToHexString(id) + "\nversion: " + byteListToHexString(version) + "\n", messages, "")
 }
