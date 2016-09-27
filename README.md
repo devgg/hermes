@@ -3,7 +3,7 @@ Hermes
 Overview
 --------------
 
-Hermes is a [YAML][1] based protocol definition language. The initial library is beeing developed in Scala with full Java interoperability in mind.
+Hermes is a [YAML][1] based protocol definition language. The library is beeing developed in Scala with full Java interoperability in mind.
 
 Language Structure
 --------------
